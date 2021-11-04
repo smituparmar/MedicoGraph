@@ -9,8 +9,8 @@ const gravatar = require('gravatar')
 const User = require('../../models/User');
 
 
-// @route    POST api/auth
-// @desc     Test route
+// @route    GET api/auth
+// @desc     get signed in user data
 // @access   Public
 router.get('/',auth,async (req,res)=>{
     try{
@@ -81,6 +81,10 @@ router.post('/login',[
       
   });
 
+  
+// @route    POST api/auth/register
+// @desc     register route
+// @access   Public
   router.post('/register',[
     check('email','include email').isEmail(),
     check('password','correct password required').exists("password required"),
