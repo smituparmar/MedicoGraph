@@ -33,7 +33,7 @@ const UserSchema = mongoose.Schema({
         type: Object,
         default: { city: null, state: null, street: null, zip: null }
       },
-    primary_phone: {
+    phone: {
         type: String
     },
     created_at:{
@@ -42,6 +42,10 @@ const UserSchema = mongoose.Schema({
     },
     dateOfBirth:{
         type:Date
+    },
+    newUser:{
+        type:Boolean,
+        default:true,
     }
 });
 

@@ -1,9 +1,9 @@
 const express = require('express');
-// const connectDB = require('./config/db');
+const connectDB = require('./config/db');
 const path = require("path");
 
 const app = express();
-// connectDB();
+connectDB();
 
 //init middleware
 app.use(express.json());
@@ -11,7 +11,7 @@ app.use(express.json());
 app.get('/', (req,res)=>res.send('API running')); 
 
 //define routes
-
+app.use('/api/auth',require('./routes/api/auth'));
 
 const PORT = process.env.PORT || 5000;
 
