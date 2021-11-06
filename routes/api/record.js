@@ -14,7 +14,6 @@ const Records = require('../../models/Records');
 router.get('/',auth,async (req,res)=>{
     try{
         const records = await Records.find({user:req.user.id});
-        // req.io.emit("message","Hey!")
         return res.status(200).send({
             success:true,
             message:"",
@@ -79,7 +78,7 @@ router.post('/create',[
                 console.log(errors)
                 return res.status(400).send({
                     success:false,
-                    message:err.message,
+                    message:errors,
                     data:""
                 });
             }
@@ -133,7 +132,7 @@ router.put('/update',[
             console.log(errors)
             return res.status(400).send({
                 success:false,
-                message:err.message,
+                message:errors,
                 data:""
             });
         }
@@ -178,7 +177,7 @@ router.put('/update',[
 // @access   Private
 router.delete('/delete',[
     auth,[
-        check('id','Id of College is required').exists()
+        check('id','Id of Record is required').exists()
     ]
 ],
 async (req,res) => {
@@ -188,7 +187,7 @@ async (req,res) => {
         console.log(errors)
         return res.status(400).send({
             success:false,
-            message:err.message,
+            message:errors,
             data:""
         });
     }
@@ -198,12 +197,13 @@ async (req,res) => {
         const record =await Records.findByIdAndRemove(id);
         
         res.status(200).send({
-            success:false,
-            message:err.message,
+            success:true,
+            message:"",
             data:record
         });
 
     } catch (error) {
+        console.log(error)
         res.status(500).send({
             success:false,
             message:error.message,

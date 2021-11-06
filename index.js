@@ -15,6 +15,7 @@ app.use('/api/auth',require('./routes/api/auth'));
 app.use('/api/patient',require('./routes/api/patient'));
 app.use('/api/record',require('./routes/api/record'));
 app.use('/api/medical',require('./routes/api/patientMedical'));
+app.use('/api/doctor',require('./routes/api/doctor'));
 
 const PORT = process.env.PORT || 5000;
 

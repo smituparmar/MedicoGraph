@@ -6,6 +6,7 @@ const bcrypt = require('bcryptjs');
 const {check, validationResult} = require('express-validator');
 const auth = require('../../middleware/auth');
 const gravatar = require('gravatar')
+
 const User = require('../../models/User');
 const Patient = require('../../models/Patient');
 const PatientMedical = require('../../models/PatientMedical');
@@ -182,7 +183,6 @@ router.put('/update', auth
 ,async (req, res) => {
 
     try {
-        console.log(req.user)
         let {
             email,
             first_name,

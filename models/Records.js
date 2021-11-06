@@ -30,7 +30,7 @@ const RecordSchema = mongoose.Schema({
     title:{
         type:String,
     },
-    note:{
+    notes:{
         type:String,
     }
 
