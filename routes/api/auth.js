@@ -22,7 +22,11 @@ router.get('/',auth,async (req,res)=>{
     }
     catch(err){
         console.log(err.message);
-        res.status(500).send('Server error');
+        res.status(500).send({
+            success:false,
+            message:err.message,
+            data:""
+        });
     }
 });
 
@@ -37,7 +41,11 @@ router.post('/login',[
       const errors = validationResult(req);
       if(!errors.isEmpty())
       {
-          return res.status(400).json({errors:errors.array()});
+          return res.status(400).send({
+            success:false,
+            message:err.message,
+            data:""
+        });
       }
   
       const {email, password} = req.body;
@@ -49,17 +57,21 @@ router.post('/login',[
   
           if(!user)
           {
-              return res.status(400).json({
+              return res.status(400).send({
                 success:false,
                 message:"Email or password is invalid",
                 data:""
-            });;
+            });
           }
   
           const isMatch = await bcrypt.compare(password,user.password);
           if(!isMatch)
           {
-            return res.status(400).json({errors:[{msg:'invalid id or password'}] });
+            return res.status(400).send({
+                success:false,
+                message:"Invalid ID or Password",
+                data:""
+            });
           }
 
           //return JWT
@@ -90,7 +102,11 @@ router.post('/login',[
       catch(err)
       {
           console.log(err.message);
-          res.status(500).send('Server error');
+          res.status(500).send({
+            success:false,
+            message:err.message,
+            data:""
+        });
       }
       
   });
@@ -110,7 +126,11 @@ router.post('/login',[
     const errors = validationResult(req);
       if(!errors.isEmpty()){
         console.log(errors)
-      return res.status(400).json(errors);
+      return res.status(400).send({
+        success:false,
+        message:err.message,
+        data:""
+    });
     }
     
     const {first_name, last_name, email, password} = req.body;
@@ -118,9 +138,9 @@ router.post('/login',[
     
     if (user) {
         errors.email = 'Email already exists';
-        return  res.status(400).json({
+        return  res.status(400).send({
             success:false,
-            message:errors.email,
+            message:err.message,
             data:""
         });
     }
@@ -195,11 +215,11 @@ router.put('/update', auth
 
         let user = await User.findById(req.user._id).select("-password");
         
-        res.status(200).json({
-            success:true,
-            message:"",
-            data:user
-        })
+        res.status(200).send({
+            success:false,
+            message:err.message,
+            data:""
+        });
 
     
     } catch (error) {
@@ -223,11 +243,11 @@ router.delete('/delete',[
     const errors = validationResult(req);
       if(!errors.isEmpty()){
         console.log(errors)
-      return res.status(400).json({
-          success:false,
-          message:errors,
-          data:""
-      });
+      return res.status(400).send({
+        success:false,
+        message:err.message,
+        data:""
+    });
     }   
 
     try {
@@ -237,10 +257,10 @@ router.delete('/delete',[
         await Records.remove({user:req.user._id});
         await PatientMedical.findOneAndRemove({user:req.user._id});
         
-        res.status(200).json({
-            success:true,
-            message:"",
-            data:user
+        res.status(200).send({
+            success:false,
+            message:err.message,
+            data:""
         });
 
     

@@ -52,18 +52,18 @@ router.post('/create',[
             if(!errors.isEmpty())
             {
                 console.log(errors)
-                return res.status(400).json({
-                success:false,
-                message:errors,
-                data:""
-            });
+                return res.status(400).send({
+                    success:false,
+                    message:err.message,
+                    data:""
+                });
             }
 
             const patientData = await Patient.findOne({user:req.user.id});
             if(patientData){
-                return res.status(400).json({
+                return res.status(400).send({
                     success:false,
-                    message:"You can only update now, you cannot create more than one record",
+                    message:"You can only update now, you can create only one record",
                     data:""
                 });
             }
@@ -79,9 +79,9 @@ router.post('/create',[
             }
 
             if(!fatherID || !motherID){
-                return res.status(400).json({
+                return res.status(400).send({
                     success:false,
-                    message:"Please Enter valid email",
+                    message:"Please enter valid email",
                     data:""
                 });
             }
@@ -126,11 +126,11 @@ router.put('/update',[
         if(!errors.isEmpty())
         {
             console.log(errors)
-            return res.status(400).json({
-            success:false,
-            message:errors,
-            data:""
-        });
+            return res.status(400).send({
+                success:false,
+                message:err.message,
+                data:""
+            });
         }
         try {
             const {  father, mother, sibling } = req.body;
@@ -144,9 +144,9 @@ router.put('/update',[
             }
 
             if(!fatherID || !motherID){
-                return res.status(400).json({
+                return res.status(400).send({
                     success:false,
-                    message:"Please Enter valid email",
+                    message:"Please enter valid email",
                     data:""
                 });
             }

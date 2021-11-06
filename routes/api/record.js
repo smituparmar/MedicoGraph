@@ -77,11 +77,11 @@ router.post('/create',[
             if(!errors.isEmpty())
             {
                 console.log(errors)
-                return res.status(400).json({
-                success:false,
-                message:errors,
-                data:""
-            });
+                return res.status(400).send({
+                    success:false,
+                    message:err.message,
+                    data:""
+                });
             }
 
             const { hemoglobin, sugarLevel, rbcCount, wbcCount, lBloodPressure, hBloodPressure, title, notes } = req.body;
@@ -131,11 +131,11 @@ router.put('/update',[
         if(!errors.isEmpty())
         {
             console.log(errors)
-            return res.status(400).json({
-            success:false,
-            message:errors,
-            data:""
-        });
+            return res.status(400).send({
+                success:false,
+                message:err.message,
+                data:""
+            });
         }
         try {
             const { id, hemoglobin, hBloodPressure, lBloodPressure, rbcCount, wbcCount, title, notes } = req.body;
@@ -186,20 +186,20 @@ async (req,res) => {
     if(!errors.isEmpty())
     {
         console.log(errors)
-        return res.status(400).json({
-        success:false,
-        message:errors,
-        data:""
-    });
+        return res.status(400).send({
+            success:false,
+            message:err.message,
+            data:""
+        });
     }
     try {
         const {id} = req.body;
 
         const record =await Records.findByIdAndRemove(id);
         
-        res.status(200).json({
-            success:true,
-            message:"",
+        res.status(200).send({
+            success:false,
+            message:err.message,
             data:record
         });
 
