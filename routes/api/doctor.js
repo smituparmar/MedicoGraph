@@ -65,21 +65,60 @@ router.get('/family/:email',[auth, isDoctor],async (req,res)=>{
             });
         }
 
-        const patient = await Patient.find({user:user._id})
+        const patient = await Patient.findOne({user:user._id})
                         .populate('user')
                         .populate('mother')
                         .populate('father')
                         .populate('sibling');
 
+        const motherPatientMedical = await PatientMedical.findOne({user:patient.mother._id});
+
+        const motherInfo = {
+            first_name: patient.mother.first_name,
+            last_name: patient.mother.last_name,
+            dateOfBirth: patient.mother.dateOfBirth
+        }
+
+        const fatherPatientMedical = await PatientMedical.findOne({user:patient.father._id});
+
+        const fatherInfo = {
+            first_name: patient.father.first_name,
+            last_name: patient.father.last_name,
+            dateOfBirth: patient.father.dateOfBirth
+        }
+
+        let siblingArray = []
+        for(i in patient.sibling){
+            const siblingMedical = await PatientMedical.findOne({user:patient.sibling[i]._id});
+
+            const siblingInfo = {
+                first_name: patient.sibling[i].first_name,
+                last_name: patient.sibling[i].last_name,
+                dateOfBirth: patient.sibling[i].dateOfBirth
+            }
+
+            siblingArray.push({siblingMedical, siblingInfo})
+        }
+
 
         return res.status(200).send({
             success:true,
             message:"",
-            data:patient
+            data:{
+                mother:{
+                    motherPatientMedical,
+                    motherInfo
+                },
+                father:{
+                    fatherPatientMedical,
+                    fatherInfo
+                },
+                sibling:siblingArray
+            }
         }); 
 }
     catch(err){
-        console.log(err.message);
+        console.log(err);
         return res.status(500).send({
             success:false,
             message:err.message,
