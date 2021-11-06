@@ -26,6 +26,12 @@ const RecordSchema = mongoose.Schema({
     Date:{
         type:Date,
         default: Date.now,
+    },
+    title:{
+        type:String,
+    },
+    note:{
+        type:String,
     }
 
 });

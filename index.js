@@ -14,6 +14,7 @@ app.get('/', (req,res)=>res.send('API running'));
 app.use('/api/auth',require('./routes/api/auth'));
 app.use('/api/patient',require('./routes/api/patient'));
 app.use('/api/record',require('./routes/api/record'));
+app.use('/api/medical',require('./routes/api/patientMedical'));
 
 const PORT = process.env.PORT || 5000;
 

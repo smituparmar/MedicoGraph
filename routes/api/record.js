@@ -67,6 +67,8 @@ router.post('/create',[
         check('wbcCount','wbcCount is required').exists(),
         check('lBloodPressure','lBloodPressure is required').exists(),
         check('hBloodPressure','hBloodPressure is required').exists(),
+        check('title','title is required').exists(),
+        check('notes','notes is required').exists(),
     ]],
     async (req,res) => {
 
@@ -82,7 +84,7 @@ router.post('/create',[
             });
             }
 
-            const { hemoglobin, sugarLevel, rbcCount, wbcCount, lBloodPressure, hBloodPressure } = req.body;
+            const { hemoglobin, sugarLevel, rbcCount, wbcCount, lBloodPressure, hBloodPressure, title, notes } = req.body;
 
             let record = new Records({
                 hemoglobin,
@@ -91,6 +93,8 @@ router.post('/create',[
                 wbcCount,
                 lBloodPressure,
                 hBloodPressure,
+                title,
+                notes,
                 user: req.user._id
             });
 
@@ -134,7 +138,7 @@ router.put('/update',[
         });
         }
         try {
-            const { id, hemoglobin, hBloodPressure, lBloodPressure, rbcCount, wbcCount } = req.body;
+            const { id, hemoglobin, hBloodPressure, lBloodPressure, rbcCount, wbcCount, title, notes } = req.body;
             
             const record = await Records.findById(id);
 
@@ -144,6 +148,8 @@ router.put('/update',[
                 lBloodPressure: lBloodPressure ? lBloodPressure : record.lBloodPressure, 
                 rbcCount: rbcCount ? rbcCount : record.rbcCount, 
                 wbcCount: wbcCount ? wbcCount : record.wbcCount,
+                title: title ? title : record.title,
+                notes: notes ? notes : record.notess,
                 user: req.user.id
             };
 

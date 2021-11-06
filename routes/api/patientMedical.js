@@ -4,20 +4,19 @@ const {check, validationResult} = require('express-validator');
 const auth = require('../../middleware/auth');
 const jwt = require('jsonwebtoken');
 const config = require("config");
-​
+
 const PatientMedical = require('../../models/PatientMedical');
-​
-​
+
 // @route   GET api/patientmedicals
 // @desc    get user's medical information
 // @access   Private
 router.get('/',auth,async (req,res)=>{
     try{
-        const patientmedicals = await PatientMedical.find({user:req.user.id});
+        const patientMedicals = await PatientMedical.find({user:req.user.id});
         return res.status(200).send({
             success:true,
             message:"",
-            data:patientmedicals
+            data:patientMedicals
         }); 
 }
     catch(err){
@@ -29,18 +28,18 @@ router.get('/',auth,async (req,res)=>{
         });
     }
 });
-​
+
 // @route   GET api/record
 // @desc    get user's college information
 // @access   Private
 router.get('/:id',auth,async (req,res)=>{
     try{
         const {id} = req.params
-        const patientmedical = await PatientMedical.findById(id);
+        const patientMedical = await PatientMedical.findById(id);
         return res.status(200).send({
             success:true,
             message:"",
-            data:patientmedical
+            data:patientMedical
         }); 
 }
     catch(err){
@@ -81,6 +80,15 @@ router.post('/create',[
             });
             }
 
+            const patientMedicalData = await PatientMedical.findOne({user:req.user.id});
+            if(patientMedicalData){
+                return res.status(400).json({
+                    success:false,
+                    message:"You can only update now, you cannot create more than one record",
+                    data:""
+                });
+            }
+
             const { bloodgroup, height, weight, hasDiabetes, hasHeartDisease, hasArthirtis, hasBloodPressureProblem } = req.body;
 
             let patientmedical = new PatientMedical({
@@ -94,7 +102,7 @@ router.post('/create',[
                 user: req.user._id
             });
 
-            const newPatientMedical = await record.save();
+            const newPatientMedical = await PatientMedical.save();
 
             res.status(200).send({
                 success:true,
@@ -149,14 +157,13 @@ router.put('/update',[
                 user: req.user.id
             };
 
-            await PatientMedical.findByIdAndUpdate(id,updatePatientMedicalBody);
+            const updatedPatientMedical = await PatientMedical.findByIdAndUpdate(id,updatePatientMedicalBody);
             
-            const updatedRecord = await PatientMedical.findById(id);
 
             res.status(200).send({
                 success:true,
                 message:"",
-                data:updatedRecord
+                data:updatedPatientMedical
             });
 
         } catch (error) {
@@ -174,7 +181,7 @@ router.put('/update',[
 // @access   Private
 router.delete('/delete',[
     auth,[
-        check('id','Id of Patient is required').exists()
+        check('id','Id of paitientMedial Table is required').exists()
     ]
 ],
 async (req,res) => {
@@ -191,7 +198,7 @@ async (req,res) => {
     try {
         const {id} = req.body;
 
-        const record = await Records.findByIdAndRemove(id);
+        const patientMedical = await patientMedical.findByIdAndRemove(id);
         
         res.status(200).json({
             success:true,
