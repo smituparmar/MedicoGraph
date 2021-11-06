@@ -54,7 +54,7 @@ router.post('/create',[
                 console.log(errors)
                 return res.status(400).send({
                     success:false,
-                    message:err.message,
+                    message:errors,
                     data:""
                 });
             }
@@ -128,7 +128,7 @@ router.put('/update',[
             console.log(errors)
             return res.status(400).send({
                 success:false,
-                message:err.message,
+                message:errors.message,
                 data:""
             });
         }

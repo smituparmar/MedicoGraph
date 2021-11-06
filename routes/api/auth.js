@@ -18,7 +18,11 @@ const Records = require('../../models/Records');
 router.get('/',auth,async (req,res)=>{
     try{
         const user = await User.findById(req.user.id).select('-password');
-        res.json(user);
+        return res.status(200).send({
+            success:true,
+            message:"",
+            data:user
+        });
     }
     catch(err){
         console.log(err.message);
@@ -43,7 +47,7 @@ router.post('/login',[
       {
           return res.status(400).send({
             success:false,
-            message:err.message,
+            message:errors,
             data:""
         });
       }
@@ -126,9 +130,9 @@ router.post('/login',[
     const errors = validationResult(req);
       if(!errors.isEmpty()){
         console.log(errors)
-      return res.status(400).send({
+        return res.status(400).send({
         success:false,
-        message:err.message,
+        message:errors,
         data:""
     });
     }
@@ -140,7 +144,7 @@ router.post('/login',[
         errors.email = 'Email already exists';
         return  res.status(400).send({
             success:false,
-            message:err.message,
+            message:errors.email,
             data:""
         });
     }
@@ -163,7 +167,7 @@ router.post('/login',[
     const salt = await bcrypt.genSalt(10);
     newUser.password = await bcrypt.hash(password, salt);
     const newUserRegistered = await newUser.save();
-    res.status(200).send({
+    return res.status(200).send({
         success:true,
         message:"",
         data:newUserRegistered
@@ -216,9 +220,9 @@ router.put('/update', auth
         let user = await User.findById(req.user._id).select("-password");
         
         res.status(200).send({
-            success:false,
-            message:err.message,
-            data:""
+            success:true,
+            message:"",
+            data:user
         });
 
     
@@ -258,9 +262,9 @@ router.delete('/delete',[
         await PatientMedical.findOneAndRemove({user:req.user._id});
         
         res.status(200).send({
-            success:false,
-            message:err.message,
-            data:""
+            success:true,
+            message:"",
+            data:user
         });
 
     
