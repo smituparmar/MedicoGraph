@@ -32,7 +32,7 @@ router.get('/',auth,async (req,res)=>{
 });
 
 // @route   GET api/record
-// @desc    get user's college information
+// @desc    get user's record information
 // @access   Private
 router.get('/:id',auth,async (req,res)=>{
     try{

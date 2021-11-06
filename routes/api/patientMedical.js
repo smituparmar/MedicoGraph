@@ -29,8 +29,8 @@ router.get('/',auth,async (req,res)=>{
     }
 });
 
-// @route   GET api/record
-// @desc    get user's college information
+// @route   GET api/medical
+// @desc    get user's medical information by ID
 // @access   Private
 router.get('/:id',auth,async (req,res)=>{
     try{
@@ -52,7 +52,7 @@ router.get('/:id',auth,async (req,res)=>{
     }
 });
 
-// @route   post api/patientmedical/create
+// @route   post api/medical/create
 // @desc    create new Patient's medicals
 // @access   Private
 router.post('/create',[
@@ -102,7 +102,7 @@ router.post('/create',[
                 user: req.user._id
             });
 
-            const newPatientMedical = await PatientMedical.save();
+            const newPatientMedical = await patientmedical.save();
 
             res.status(200).send({
                 success:true,
@@ -121,14 +121,11 @@ router.post('/create',[
     }
 );
 
-// @route   PUT api/patientmedicalupdate
+// @route   PUT api/medical/update
 // @desc    update Patient's medicals
 // @access   Private
 router.put('/update',[
-    auth,
-    [
-        check('id','ID of the patient is required').exists()
-    ]],
+    auth],
     async (req,res) => {
 
         const errors = validationResult(req);
@@ -142,9 +139,17 @@ router.put('/update',[
         });
         }
         try {
-            const { id, bloodGroup, height, weight, hasDiabetes, hasHeartDisease, hasArthirtis, hasBloodPressureProblem } = req.body;
+            const medicalRecord = await PatientMedical.findOne({user:req.user.id});
+            if(!medicalRecord){
+                return res.status(400).json({
+                    success:false,
+                    message:"Please Enter data first",
+                    data:""
+                });
+            }
+            const { bloodGroup, height, weight, hasDiabetes, hasHeartDisease, hasArthirtis, hasBloodPressureProblem } = req.body;
             
-            const patientmedical = await PatientMedical.findById(id);
+            const patientmedical = await PatientMedical.findById(medicalRecord._id);
 
             const updatePatientMedicalBody = {
                 bloodGroup: bloodGroup ? bloodGroup : patientmedical.bloodGroup,
@@ -157,8 +162,9 @@ router.put('/update',[
                 user: req.user.id
             };
 
-            const updatedPatientMedical = await PatientMedical.findByIdAndUpdate(id,updatePatientMedicalBody);
+            await PatientMedical.findByIdAndUpdate(medicalRecord._id,updatePatientMedicalBody);
             
+            const updatedPatientMedical = await PatientMedical.findById(medicalRecord._id);
 
             res.status(200).send({
                 success:true,
@@ -180,9 +186,7 @@ router.put('/update',[
 // @desc    delete Patient's medicals
 // @access   Private
 router.delete('/delete',[
-    auth,[
-        check('id','Id of paitientMedial Table is required').exists()
-    ]
+    auth,
 ],
 async (req,res) => {
     const errors = validationResult(req);
@@ -196,14 +200,22 @@ async (req,res) => {
     });
     }
     try {
-        const {id} = req.body;
 
-        const patientMedical = await patientMedical.findByIdAndRemove(id);
+        const medicalRecord = await PatientMedical.findOne({user:req.user.id});
+        if(!medicalRecord){
+            return res.status(400).json({
+                success:false,
+                message:"Please Enter data first",
+                data:""
+            });
+        }
+
+        const patientMedical = await PatientMedical.findByIdAndRemove(medicalRecord._id);
         
         res.status(200).json({
             success:true,
             message:"",
-            data:record
+            data:patientMedical
         });
 
     } catch (error) {
