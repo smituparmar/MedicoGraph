@@ -21,7 +21,11 @@ async (req,res)=>{
     const errors = validationResult(req);
     if(!errors.isEmpty())
     {
-        return res.status(400).json({errors:errors.array()});
+        return res.status(400).send({
+            success:false,
+            message:err.message,
+            data:""
+        });
     }
 
     const {name, email, password} = req.body;
@@ -33,7 +37,11 @@ async (req,res)=>{
 
         if(user)
         {
-            return res.status(400).json({errors:[{msg:'User already exists'}] });
+            return res.status(400).send({
+                success:false,
+                message:"User already exists",
+                data:""
+            });
         }
 
 
@@ -80,7 +88,11 @@ async (req,res)=>{
     catch(err)
     {
         console.log(err.message);
-        res.status(500).send('Server error');
+        res.status(500).send({
+            success:false,
+            message:"Server error",
+            data:""
+        });
     }
     
 });
