@@ -8,7 +8,21 @@ const MedicalInfoSchema = mongoose.Schema({
     bloodGroup:{
         type: String,
     },
+    height:{
+        type:Number,
+    },
+    weight:{
+        type:Number,
+    },
     hasDiabetes:{
+        type:Boolean,
+        default:false
+    },
+    hasHeartDisease:{
+        type:Boolean,
+        default:false
+    },
+    hasArthritis:{
         type:Boolean,
         default:false
     },
