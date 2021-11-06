@@ -20,9 +20,13 @@ const RecordSchema = mongoose.Schema({
     lBloodPressure:{
         type: Number
     },
-    rBloodPressure:{
+    hBloodPressure:{
         type: Number
     },
+    Date:{
+        type:Date,
+        default: Date.now,
+    }
 
 });
 
