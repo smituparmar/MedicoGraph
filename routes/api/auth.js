@@ -7,6 +7,9 @@ const {check, validationResult} = require('express-validator');
 const auth = require('../../middleware/auth');
 const gravatar = require('gravatar')
 const User = require('../../models/User');
+const Patient = require('../../models/Patient');
+const PatientMedical = require('../../models/PatientMedical');
+const Records = require('../../models/Records');
 
 
 // @route    GET api/auth
@@ -46,7 +49,11 @@ router.post('/login',[
   
           if(!user)
           {
-              return res.status(400).json({errors:[{msg:'invalid id or password'}] });
+              return res.status(400).json({
+                success:false,
+                message:"Email or password is invalid",
+                data:""
+            });;
           }
   
           const isMatch = await bcrypt.compare(password,user.password);
@@ -68,7 +75,14 @@ router.post('/login',[
               {expiresIn:360000},
               (err,token) => {
                   if(err) throw err;
-                  res.json({token});
+                  res.status(200).send({
+                    success:true,
+                    message:"",
+                    data:{
+                        token,
+                        newUser: user.newUser
+                    }
+                });
               }
           );
       
@@ -95,7 +109,7 @@ router.post('/login',[
     // Check Validation
     const errors = validationResult(req);
       if(!errors.isEmpty()){
-        console.log(errors, isValid)
+        console.log(errors)
       return res.status(400).json(errors);
     }
     
@@ -104,7 +118,11 @@ router.post('/login',[
     
     if (user) {
         errors.email = 'Email already exists';
-        return res.status(400).json(errors);
+        return  res.status(400).json({
+            success:false,
+            message:errors.email,
+            data:""
+        });
     }
 
     const avatar = await gravatar.url(req.body.email, {
@@ -124,9 +142,12 @@ router.post('/login',[
   
     const salt = await bcrypt.genSalt(10);
     newUser.password = await bcrypt.hash(password, salt);
-    await newUser.save();
-    console.log('user')
-    res.send('User registered')
+    const newUserRegistered = await newUser.save();
+    res.status(200).send({
+        success:true,
+        message:"",
+        data:newUserRegistered
+    });
    }
 );
 
@@ -212,6 +233,9 @@ router.delete('/delete',[
     try {
         
         const user =await User.findByIdAndRemove(req.user._id).select("-password");
+        await Patient.findOneAndRemove({user:req.user._id});
+        await Records.remove({user:req.user._id});
+        await PatientMedical.findOneAndRemove({user:req.user._id});
         
         res.status(200).json({
             success:true,

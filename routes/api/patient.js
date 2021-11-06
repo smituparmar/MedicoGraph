@@ -119,10 +119,7 @@ router.post('/create',[
 // @desc    update user's Family Infor
 // @access   Private
 router.put('/update',[
-    auth,
-    [
-        check('id','ID of Patient is required').exists()
-    ]],
+    auth],
     async (req,res) => {
 
         const errors = validationResult(req);
@@ -136,32 +133,41 @@ router.put('/update',[
         });
         }
         try {
-            const { id, father, mother } = req.body;
+            const {  father, mother, sibling } = req.body;
             
-            const college = await College.findById(id);
+            const fatherID = await User.findOne({email:father});
+            const motherID = await User.findOne({email:mother});
+            let siblingList = [];
+            for(i in sibling){
+                let siblingElement = await User.findOne({email:sibling[i]});
+                siblingList.push(siblingElement.id);
+            }
 
-            const updateCollegeBody = {
-                name: name?name:college.name,
-                email : email?email:college.email,
-                phone : phone?phone:college.phone,
-                address:{
-                    street : street?street:college.address.street,
-                    city : city?city:college.address.city,
-                    state : state?state:college.address.state,
-                    zip : zip?zip:college.address.zip,
-                    country: country?country:college.address.country,
-                },
-                userId: req.user._id
-            };
+            if(!fatherID || !motherID){
+                return res.status(400).json({
+                    success:false,
+                    message:"Please Enter valid email",
+                    data:""
+                });
+            }
 
-            await College.findByIdAndUpdate(id,updateCollegeBody);
-            
-            const updatedCollege = await College.findById(id);
+            const updatePatientBody = {
+                user: req.user.id,
+                father: fatherID._id,
+                mother: motherID._id,
+                sibling: siblingList,
+            }
+
+            let patient = await Patient.findOne({userId:req.user._id});
+
+            await Patient.findByIdAndUpdate(patient._id, updatePatientBody )
+
+            patient = await Patient.findOne({userId:req.user._id});
 
             res.status(200).send({
                 success:true,
                 message:"",
-                data:updatedCollege
+                data:patient
             });
 
         } catch (error) {
