@@ -8,7 +8,11 @@ module.exports = async (req,res,next) => {
     //check if no token
     if(!token)
     {
-        return res.status(401).json({msg:'No token, auth failed'});
+        return  res.status(500).send({
+            success:false,
+            message:"Token is invalid",
+            data:""
+        });;
     }
 
     //verify token
@@ -20,6 +24,10 @@ module.exports = async (req,res,next) => {
     }
     catch(err)
     {
-        res.status(401).json({msg:"Token is not valid"});
+        return res.status(500).send({
+            success:false,
+            message:"Token is invalid",
+            data:""
+        });
     }
 };
