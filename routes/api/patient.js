@@ -75,6 +75,13 @@ router.post('/create',[
             let siblingList = [];
             for(i in sibling){
                 let siblingElement = await User.findOne({email:sibling[i]});
+                if(!siblingElement){
+                    return res.status(400).send({
+                        success:false,
+                        message:"Please enter valid email",
+                        data:""
+                    });
+                }
                 siblingList.push(siblingElement.id);
             }
 
@@ -85,7 +92,7 @@ router.post('/create',[
                     data:""
                 });
             }
-            console.log(req.user)
+
             let patient = new Patient({
                 user: req.user.id,
                 father: fatherID._id,
@@ -140,6 +147,14 @@ router.put('/update',[
             let siblingList = [];
             for(i in sibling){
                 let siblingElement = await User.findOne({email:sibling[i]});
+                console.log(siblingElement)
+                if(!siblingElement){
+                    return res.status(400).send({
+                        success:false,
+                        message:"Please enter valid email",
+                        data:""
+                    });
+                }
                 siblingList.push(siblingElement.id);
             }
 
