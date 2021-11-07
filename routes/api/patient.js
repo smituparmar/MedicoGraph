@@ -100,9 +100,7 @@ router.post('/create',[
                 sibling: siblingList,
             });
 
-            await patient.save();
-
-            patient = await Patient.findOne({userId:req.user._id});
+            patient = await patient.save();
 
             res.status(200).send({
                 success:true,
@@ -172,11 +170,11 @@ router.put('/update',[
                 sibling: siblingList,
             }
 
-            let patient = await Patient.findOne({userId:req.user._id});
+            let patient = await Patient.findOne({user:req.user._id});
 
             await Patient.findByIdAndUpdate(patient._id, updatePatientBody )
 
-            patient = await Patient.findOne({userId:req.user._id});
+            patient = await Patient.findOne({users:req.user._id});
 
             res.status(200).send({
                 success:true,
