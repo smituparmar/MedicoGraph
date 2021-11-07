@@ -30,7 +30,8 @@ router.get('/:email',[auth, isDoctor],async (req,res)=>{
         const userInfo = {
             first_name: user.first_name,
             last_name: user.last_name,
-            dateOfBirth: user.dateOfBirth
+            dateOfBirth: user.dateOfBirth,
+            email: user.email
         }
 
         return res.status(200).send({
@@ -64,7 +65,6 @@ router.get('/family/:email',[auth, isDoctor],async (req,res)=>{
                 data:""
             });
         }
-
         const patient = await Patient.findOne({user:user._id})
                         .populate('user')
                         .populate('mother')
@@ -76,7 +76,8 @@ router.get('/family/:email',[auth, isDoctor],async (req,res)=>{
         const motherInfo = {
             first_name: patient.mother.first_name,
             last_name: patient.mother.last_name,
-            dateOfBirth: patient.mother.dateOfBirth
+            dateOfBirth: patient.mother.dateOfBirth,
+            email: patient.mother.email
         }
 
         const fatherPatientMedical = await PatientMedical.findOne({user:patient.father._id});
@@ -84,7 +85,8 @@ router.get('/family/:email',[auth, isDoctor],async (req,res)=>{
         const fatherInfo = {
             first_name: patient.father.first_name,
             last_name: patient.father.last_name,
-            dateOfBirth: patient.father.dateOfBirth
+            dateOfBirth: patient.father.dateOfBirth,
+            email: patient.father.email
         }
 
         let siblingArray = []
@@ -94,10 +96,11 @@ router.get('/family/:email',[auth, isDoctor],async (req,res)=>{
             const siblingInfo = {
                 first_name: patient.sibling[i].first_name,
                 last_name: patient.sibling[i].last_name,
-                dateOfBirth: patient.sibling[i].dateOfBirth
+                dateOfBirth: patient.sibling[i].dateOfBirth,
+                email: patient.sibling[i].email
             }
 
-            siblingArray.push({siblingMedical, siblingInfo})
+            siblingArray.push({patientMedical:siblingMedical, user:siblingInfo})
         }
 
 
@@ -106,12 +109,12 @@ router.get('/family/:email',[auth, isDoctor],async (req,res)=>{
             message:"",
             data:{
                 mother:{
-                    motherPatientMedical,
-                    motherInfo
+                    patientMedical:motherPatientMedical,
+                    user:motherInfo
                 },
                 father:{
-                    fatherPatientMedical,
-                    fatherInfo
+                    patientMedical:fatherPatientMedical,
+                    user:fatherInfo
                 },
                 sibling:siblingArray
             }

@@ -85,7 +85,7 @@ router.post('/create',[
                     data:""
                 });
             }
-
+            console.log(req.user)
             let patient = new Patient({
                 user: req.user.id,
                 father: fatherID._id,
