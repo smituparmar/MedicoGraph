@@ -212,7 +212,7 @@ router.put('/update', auth
                 country: country ? country : req.user.country,
             },
             avatar: avatar ? avatar : req.user.avatar,
-            newUser: newUser ? newUser : req.user.newUser
+            newUser: newUser!=null ? newUser : req.user.newUser
         }
 
         await User.findByIdAndUpdate(req.user._id,updateUserBody);

@@ -155,10 +155,10 @@ router.put('/update',[
                 bloodGroup: bloodGroup ? bloodGroup : patientmedical.bloodGroup,
                 height: height ? height : patientmedical.height,
                 weight: weight ? weight : patientmedical.weight, 
-                hasDiabetes: hasDiabetes ? hasDiabetes : patientmedical.hasDiabetes, 
-                hasHeartDisease: hasHeartDisease ? hasHeartDisease : patientmedical.hasHeartDisease,
-                hasArthirtis: hasArthirtis ? hasArthirtis : patientmedical.hasArthirtis,
-                hasBloodPressureProblem: hasBloodPressureProblem ? hasBloodPressureProblem : patientmedical.hasBloodPressureProblem,
+                hasDiabetes: hasDiabetes!=null ? hasDiabetes : patientmedical.hasDiabetes, 
+                hasHeartDisease: hasHeartDisease!=null ? hasHeartDisease : patientmedical.hasHeartDisease,
+                hasArthirtis: hasArthirtis!=null ? hasArthirtis : patientmedical.hasArthirtis,
+                hasBloodPressureProblem: hasBloodPressureProblem!=null ? hasBloodPressureProblem : patientmedical.hasBloodPressureProblem,
                 user: req.user.id
             };
 
