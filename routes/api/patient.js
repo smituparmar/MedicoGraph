@@ -147,7 +147,6 @@ router.put('/update',[
             let siblingList = [];
             for(i in sibling){
                 let siblingElement = await User.findOne({email:sibling[i]});
-                console.log(siblingElement)
                 if(!siblingElement){
                     return res.status(400).send({
                         success:false,
