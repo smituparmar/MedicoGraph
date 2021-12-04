@@ -70,7 +70,6 @@ router.get('/family/:email',[auth, isDoctor],async (req,res)=>{
                         .populate('mother')
                         .populate('father')
                         .populate('sibling');
-        console.log(patient)
         const motherPatientMedical = await PatientMedical.findOne({user:patient.mother._id});
 
         const motherInfo = {
