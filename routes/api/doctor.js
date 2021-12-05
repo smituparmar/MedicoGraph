@@ -367,6 +367,40 @@ router.get('/records/:email',[auth, isDoctor],async (req,res)=>{
     }
 });
 
+// @route   GET api/doctor/:email
+// @desc    get user's basic info for doctor
+// @access   Private
+router.get('/records/:email',[auth, isDoctor],async (req,res)=>{
+    try{
+        const {email} = req.params
+
+        let user = await User.findOne({email});
+        if(!user){
+            return res.status(400).send({
+                success:false,
+                message:"Please Enter email address",
+                data:""
+            });
+        }
+
+        const records = await Record.find({user:user._id})
+
+        return res.status(200).send({
+            success:true,
+            message:"",
+            data:records
+        }); 
+}
+    catch(err){
+        console.log(err.message);
+        return res.status(500).send({
+            success:false,
+            message:err.message,
+            data:""
+        });
+    }
+});
+
 
 
 module.exports = router;
